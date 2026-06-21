@@ -1,0 +1,16 @@
+@extends('layouts.app')
+@section('title', 'Информация о Курсах')
+@section('content')
+	<div class="row">
+		<div class="col-10">
+			<h1>{{$course->name}}</h1>
+		</div>
+		<td>
+			<a href="{{ route('detail', ['recepie' => $recepie]) }}">Подробнее...</a>
+		</td>
+		<div class="col author">
+			<p class="author">{{ $course->user->name }}</p>
+			<p class="birth">{{$course->category}}</p>
+		</div>
+	</div>
+@endsection('content')

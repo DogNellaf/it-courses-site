@@ -1,0 +1,53 @@
+h1.company {
+	text-align: center;
+	margin-top: 20px;
+}
+p.text-description {
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+h1.courses {
+	text-align: center;
+	margin-top: 120px;
+	margin-bottom: 30px;
+}
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+div {
+    margin-bottom: 10px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #45a049;
+}
+
+form.categories_hold {
+	margin-bottom: 20px;
+}
+
+button.search_hold {
+	margin-left: 37%;
+	margin-top: 20px;
+}
