@@ -10,7 +10,7 @@ Laravel-приложение для управления курсами прог
 |---|---|
 | Backend | PHP 8.1+, Laravel 10 |
 | Frontend | Bootstrap 5 |
-| База данных | MySQL 8 (для разработки), SQLite (для тестов) |
+| База данных | MySQL 8 |
 | Аутентификация | Laravel UI (сессии) |
 | Тесты | PHPUnit 10 |
 
@@ -50,8 +50,6 @@ DB_PASSWORD=
 php artisan migrate
 php artisan db:seed
 ```
-
-Сидер создаст 8 категорий и 8 тестовых курсов.
 
 ### 4. Запуск
 
@@ -107,73 +105,8 @@ users
 
 ## Тестирование
 
+Тесты используют SQLite in-memory — отдельная БД не нужна.
+
 ```bash
 php artisan test
 ```
-
-Тесты используют SQLite in-memory — отдельная БД не нужна.
-
-### Покрытие тестами
-
-| Файл | Что тестируется |
-|---|---|
-| `Feature/CoursesControllerTest` | index (фильтр, пагинация), detail (404), storeApplication (валидация, запись) |
-| `Feature/HomeControllerTest` | Редиректы гостей, CRUD курсов, удаление заявок |
-| `Feature/AuthTest` | Регистрация, вход, выход, неверный пароль |
-| `Unit/CourseModelTest` | Связи, касты, cascade delete |
-| `Unit/ApplicationModelTest` | Связи, касты, состояния фабрики |
-| `Unit/CategoryModelTest` | Связи, cascade delete |
-
----
-
-## Найденные и исправленные ошибки
-
-### Критические
-
-| Файл | Проблема | Исправление |
-|---|---|---|
-| `HomeController@store` | Синтаксическая ошибка `])`; несуществующие поля `short_description`, `full_description` | Переписан метод |
-| `home.blade.php` | Использует неопределённую переменную `$applications` (контроллер передавал `$courses`) | Контроллер теперь передаёт `$applications` |
-| `detail.blade.php` | `$course->name` (поля нет), `$course->user->name` (связи нет) | Исправлено на `$course->title` и `$course->category->title` |
-| `home.blade.php` | Ссылки на несуществующие маршруты `application.edit`, `application.delete` | Добавлен маршрут `application.destroy` |
-| `CoursesController@store_application` | После сохранения вызывал `$this->index()` вместо redirect | → `redirect()->route('index')` |
-
-### Миграции
-
-| Файл | Проблема | Исправление |
-|---|---|---|
-| `create_categories_table` | `down()` удаляет `caterogies` (опечатка) | → `categories` |
-| `create_applications_table` | `down()` удаляет `application` | → `applications` |
-| `create_courses_table` | `down()` удаляет `course` | → `courses` |
-| `create_courses_table` | `cost` — тип `string(10)` | → `decimal(10,2)` |
-| `create_applications_table` | `full_name`, `email` — `string(50)` (слишком коротко) | → `string(150)` |
-| `create_applications_table` | `application_date` — тип `date` (нет времени) | → `timestamp` |
-
-### Модели
-
-| Файл | Проблема | Исправление |
-|---|---|---|
-| Все модели | Отсутствуют Eloquent-связи | Добавлены `belongsTo`, `hasMany` |
-| `Category`, `Course`, `Application` | `HasFactory` не использовался | Добавлен трейт |
-| `User` | Нет `applications()` relationship | Добавлен `hasMany(Application::class)` |
-
----
-
-## Добавленный функционал
-
-- **Форма заявки на странице курса** — можно записаться прямо со страницы детали
-- **Личный кабинет** — список заявок пользователя с датой, цветным статусом и кнопкой удаления
-- **Создание курсов** — форма для добавления нового курса (для авторизованных пользователей)
-- **Flash-сообщения** — уведомления об успехе после отправки заявки или создания курса
-- **Inline-валидация** — подсветка полей с ошибками через Bootstrap `is-invalid`
-- **Сброс фильтра** — кнопка «Сбросить» при фильтрации по категории
-- **Карточки курсов** — сетка 3 колонки с изображением, описанием, ценой, категорией
-- **Eager loading** — `with('category')` и `with('course.category')` для предотвращения N+1
-- **Seeders** — 8 категорий и 8 реальных курсов для быстрого старта
-- **Фабрики** — `CategoryFactory`, `CourseFactory`, `ApplicationFactory` (с состояниями pending/approved/rejected)
-
----
-
-## Автор
-
-Петунин Иван Евгеньевич
