@@ -139,4 +139,4 @@ courses-programm/
 
 ## License
 
-This project does not currently specify a license.
+[MIT](LICENSE)
