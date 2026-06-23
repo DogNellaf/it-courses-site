@@ -1,74 +1,85 @@
 # Courses Programm
 
-Laravel-приложение для управления курсами программирования: просмотр каталога, запись на курсы, личный кабинет.
+> 🇬🇧 English | [🇷🇺 Русский](README.ru.md)
 
----
+A Laravel application for managing programming courses: browse the catalog, submit course applications, and manage everything from a personal dashboard.
 
-## Стек технологий
+## Features
 
-| Слой | Технология |
+- Course catalog with category filtering
+- Detailed course pages
+- Course application (enrollment) form
+- Personal dashboard with your submitted applications
+- Course creation for authenticated users
+- Application deletion
+- Session-based authentication via Laravel UI
+- Responsive UI built with Bootstrap 5
+
+## Tech Stack
+
+| Layer | Technology |
 |---|---|
 | Backend | PHP 8.1+, Laravel 10 |
 | Frontend | Bootstrap 5 |
-| База данных | MySQL 8 |
-| Аутентификация | Laravel UI (сессии) |
-| Тесты | PHPUnit 10 |
+| Database | MySQL 8 |
+| Authentication | Laravel UI (session-based) |
+| Testing | PHPUnit 10 |
 
----
+## Requirements
 
-## Установка и запуск
+- PHP 8.1+
+- Composer
+- MySQL 8 (or a compatible database)
 
-### 1. Клонирование и зависимости
+## Installation
 
 ```bash
+# Clone the repository
 git clone <repo-url>
 cd courses-programm
+
+# Install dependencies
 composer install
-```
 
-### 2. Настройка окружения
-
-```bash
+# Set up the environment file
 cp .env.example .env
 php artisan key:generate
 ```
 
-Отредактируйте `.env` — укажите параметры БД:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=courses
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### 3. Миграции и начальные данные
+Edit `.env` and set your database credentials (see [Environment Variables](#environment-variables) below), then run the migrations and seed the initial data:
 
 ```bash
 php artisan migrate
 php artisan db:seed
 ```
 
-### 4. Запуск
+Start the development server:
 
 ```bash
 php artisan serve
 ```
 
-Приложение доступно по адресу: `http://127.0.0.1:8000`
+The application will be available at `http://127.0.0.1:8000`.
 
----
+## Environment Variables
 
-## Структура базы данных
+| Variable | Description | Default |
+|---|---|---|
+| `DB_CONNECTION` | Database driver | `mysql` |
+| `DB_HOST` | Database host | `127.0.0.1` |
+| `DB_PORT` | Database port | `3306` |
+| `DB_DATABASE` | Database name | `courses` |
+| `DB_USERNAME` | Database username | `root` |
+| `DB_PASSWORD` | Database password | _(empty)_ |
+
+## Database Schema
 
 ```
 categories
   id, title, timestamps
 
 courses
-  id, title, duration (int, часы), cost (decimal 10,2),
+  id, title, duration (int, hours), cost (decimal 10,2),
   description, image, category_id → categories, timestamps
 
 applications
@@ -80,33 +91,52 @@ users
   email_verified_at, timestamps
 ```
 
-### Связи моделей
+**Model relationships**
 
 - `Category` → `hasMany` Course
 - `Course` → `belongsTo` Category, `hasMany` Application
 - `Application` → `belongsTo` Course
 - `User` → `hasMany` Application
 
----
+## Routes
 
-## Маршруты
-
-| Метод | URI | Имя | Доступ | Описание |
+| Method | URI | Name | Access | Description |
 |---|---|---|---|---|
-| GET | `/` | `index` | Все | Каталог курсов с фильтром по категории |
-| GET | `/courses/{course}` | `detail` | Все | Страница курса |
-| POST | `/applications` | `application.store` | Все | Отправить заявку на курс |
-| GET | `/home` | `home.index` | Auth | Мои заявки |
-| GET | `/home/courses/create` | `home.course.create` | Auth | Форма добавления курса |
-| POST | `/home/courses` | `home.course.store` | Auth | Сохранить курс |
-| DELETE | `/home/applications/{application}` | `home.application.destroy` | Auth | Удалить заявку |
+| GET | `/` | `index` | Public | Course catalog with category filter |
+| GET | `/courses/{course}` | `detail` | Public | Course detail page |
+| POST | `/applications` | `application.store` | Public | Submit a course application |
+| GET | `/home` | `home.index` | Auth | My applications |
+| GET | `/home/courses/create` | `home.course.create` | Auth | Add course form |
+| POST | `/home/courses` | `home.course.store` | Auth | Save course |
+| DELETE | `/home/applications/{application}` | `home.application.destroy` | Auth | Delete application |
 
----
+## Running Tests
 
-## Тестирование
-
-Тесты используют SQLite in-memory — отдельная БД не нужна.
+Tests run against an in-memory SQLite database — no separate database setup needed.
 
 ```bash
 php artisan test
 ```
+
+## Project Structure
+
+```
+courses-programm/
+├── app/
+│   ├── Models/            # Category, Course, Application, User
+│   └── Http/
+│       └── Controllers/   # Course, Application and Home controllers
+├── database/
+│   ├── migrations/        # categories, courses, applications, users tables
+│   └── seeders/           # Initial data seeders
+├── resources/
+│   └── views/             # Blade templates (Bootstrap 5 UI)
+├── routes/
+│   └── web.php            # Application routes
+├── tests/                 # PHPUnit test suite (SQLite in-memory)
+└── .env.example
+```
+
+## License
+
+This project does not currently specify a license.
